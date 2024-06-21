@@ -1,25 +1,45 @@
 // Get the client
-import mysql from 'mysql2/promise';
+import express from 'express';
+import cors from 'cors';
+import {getMenuItems} from './methods.js';
+
+
 
 // Create the connection to database
-const connection = await mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '123456789',
-  database: 'asoe',
-});
+
+
+
+const app = express()
+app.use(cors());
+
+const port = 5000
+
+app.get('/getMenu', (req, res) => {
+    const result= getMenuItems();
+    console.log(result);
+    res.send(result);
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+
+
 
 // A simple SELECT query
-try {
-  const [results, fields] = await connection.query(
-    'SELECT * FROM `tables`'
-  );
+// try {
+//     console.log('trexei to back')
+//   const [results, fields] = await connection.query(
+//     'SELECT * FROM `tables`'
+//   );
 
-  console.log(results); // results contains rows returned by server
-  console.log(fields); // fields contains extra meta data about results, if available
-} catch (err) {
-  console.log(err);
-}
+
+// } catch (err) {
+//   console.log(err);
+// }
+
+
+
 
 // // Using placeholders
 // try {
