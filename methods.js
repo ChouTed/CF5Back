@@ -9,12 +9,12 @@ let connection = await mysql.createConnection({
   });
 
 
-async function getMenuItems2(){
+async function getMenuItems(){
     console.log("heheh")
     let resultsR = []
     let res = await connection.query(
-        'SELECT * FROM `tables`'
-    ).then(response => {return response[0]});
+        'SELECT * FROM `products` ORDER BY product_name;'
+    ).then(response => {return response});
 
 
     return res; 
@@ -22,6 +22,6 @@ async function getMenuItems2(){
 }
 
 export  {
-    getMenuItems2
+    getMenuItems
 }
 

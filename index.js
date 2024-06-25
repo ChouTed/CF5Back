@@ -1,8 +1,8 @@
 // Get the client
 import express from 'express';
 import cors from 'cors';
-import { getMenuItems2 }from './methods.js';
-import mysql from 'mysql2/promise';
+import { getMenuItems }from './methods.js';
+// import mysql from 'mysql2/promise';
 
 
 
@@ -17,10 +17,10 @@ const port = 5000
 
 
 app.get('/api/getMenu', async (req, res) => {
-    let result= await getMenuItems2();
+    let result= await getMenuItems();
     console.log(typeof(result));
     console.warn(result[0])
-    res.send(result[0]);
+    res.json(result[0]);
 })
 
 app.listen(port, () => {
