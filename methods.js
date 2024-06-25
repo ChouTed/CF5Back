@@ -1,9 +1,7 @@
 import mysql from 'mysql2/promise';
 
 
-let connection = null;
-
-connection = await mysql.createConnection({
+let connection = await mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '123456789',
@@ -11,19 +9,19 @@ connection = await mysql.createConnection({
   });
 
 
-
-
-async function getMenuItems(){
-    const [results, fields] = await connection.query(
+async function getMenuItems2(){
+    console.log("heheh")
+    let resultsR = []
+    let res = await connection.query(
         'SELECT * FROM `tables`'
-    ).then(response => (this.results = response));
+    ).then(response => {return response[0]});
 
-    // console.log(results)
-    return JSON.stringify(results); 
+
+    return res; 
 
 }
 
-export default {
-    getMenuItems
+export  {
+    getMenuItems2
 }
 
