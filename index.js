@@ -16,6 +16,8 @@ const port = 5000
 
 
 
+
+
 app.get('/api/getMenu', async (req, res) => {
     let result= await getMenuItems();
     console.log(typeof(result));
