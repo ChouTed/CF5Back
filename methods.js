@@ -1,3 +1,4 @@
+import { response } from 'express';
 import mysql from 'mysql2/promise';
 
 
@@ -10,8 +11,6 @@ let connection = await mysql.createConnection({
 
 
 async function getMenuItems(){
-    console.log("heheh")
-    let resultsR = []
     let res = await connection.query(
         'SELECT * FROM `products` ORDER BY product_name;'
     ).then(response => {return response});
@@ -21,7 +20,18 @@ async function getMenuItems(){
 
 }
 
+async function getUsers(){
+    let res = await connection.query(
+        'SELECT username,password FROM `user_login` '
+    ).then(response => {return response});
+    console.log(typeof(res.json) + 'edw koita')
+    return res;
+
+}
+
+
 export  {
-    getMenuItems
+    getMenuItems,
+    getUsers
 }
 
