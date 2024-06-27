@@ -24,8 +24,8 @@ async function getUsers(){
     let res = await connection.query(
         'SELECT username,password FROM `user_login` '
     ).then(response => {return response});
-    console.log(typeof(res.json) + 'edw koita')
-    return res;
+    
+    return Object.values(JSON.parse(JSON.stringify(res)));
 
 }
 

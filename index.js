@@ -29,30 +29,19 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-app.get('/api/getUsers/login', async (req, res) => {
-    console.log("klithike apo to back")
+app.post('/api/getUsers/login', async (req, res) => {
+    // console.log("klithike apo to back")
     let users = await getUsers();
-    console.log(users.length)
-    for (let i in users){
-        for (let j in users[i]){
-            console.log("bebe")
-            console.log(users[i][j].username)
-        }
-        
-    }
-    let user = users.find((x) => {
-        // console.log(x.username + "77")
-        return x.username == 'admin'
-    })
-    console.log(users[0])
+    let user = users[0].find(x => x.username === req.body.username)
     if (user == null){
-        console.log(req.body.username)
         return res.status(400).send('Cannot Find User')
     }
     else{
-        if(await bcrypt.compare(req.body.password, users.password)) {
-            console.log("doulepse")
-            res.send('Succes')
+        console.log(user)
+        console.log('~~~~~~~~~~')
+        console.log(req.body)
+        if ( req.body.password == user.password){
+            res.send('Success')
         }else{
             res.status(500).send('Wrong Password');
         }
