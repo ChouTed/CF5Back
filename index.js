@@ -1,14 +1,26 @@
 // Get the client
 import express from 'express';
+import session from 'express-session';
 import cors from 'cors';
-import bcrypt from 'bcrypt';
 import { getMenuItems }from './methods.js';
 import { getUsers }from './methods.js';
 
 
+
+
 const app = express()
+
+app.use(session ({
+    secret: 'secret key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 30000 }
+}))
+
 app.use(cors());
+
 const port = 5000
+
 app.use(express.json()); //Allows application to accept JSON
 
 
@@ -29,17 +41,21 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-app.post('/api/getUsers/login', async (req, res) => {
-    // console.log("klithike apo to back")
+app.get('/api/login', (req, res) => {
+    req.session.isAuth = true;
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    console.log(req.session);
+    res.send("hello")
+    console.log(req.session.id);
+})
+
+app.post('/api/login', async (req, res) => {
     let users = await getUsers();
     let user = users[0].find(x => x.username === req.body.username)
     if (user == null){
         return res.status(400).send('Cannot Find User')
     }
     else{
-        console.log(user)
-        console.log('~~~~~~~~~~')
-        console.log(req.body)
         if ( req.body.password == user.password){
             res.send('Success')
         }else{

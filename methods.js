@@ -1,5 +1,5 @@
-import { response } from 'express';
 import mysql from 'mysql2/promise';
+
 
 
 let connection = await mysql.createConnection({
@@ -8,6 +8,10 @@ let connection = await mysql.createConnection({
     password: '123456789',
     database: 'asoe',
   });
+
+
+
+
 
 
 async function getMenuItems(){
