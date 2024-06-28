@@ -9,7 +9,7 @@ import { getUsers }from './methods.js';
 
 
 const app = express()
-
+app.use(cors());
 app.use(session ({
     secret: 'secret key',
     resave: false,
@@ -17,11 +17,20 @@ app.use(session ({
     cookie: { maxAge: 30000 }
 }))
 
-app.use(cors());
+app.use(express.json()); //Allows to accept JSON
 
 const port = 5000
 
-app.use(express.json()); //Allows application to accept JSON
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-Width, Content-Type, Accept"
+    );
+    next();
+}); 
 
 
 
@@ -41,25 +50,31 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-app.get('/api/login', (req, res) => {
-    req.session.isAuth = true;
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    console.log(req.session);
-    res.send("hello")
-    console.log(req.session.id);
-})
+// app.get('/api/login', (req, res) => {
+    
+//     console.log(req.session);
+//     res.send("hello")
+//     console.log(req.session.id);
+// })
 
 app.post('/api/login', async (req, res) => {
+    req.session.isAuth = true;
     let users = await getUsers();
+    
+
     let user = users[0].find(x => x.username === req.body.username)
+    console.log("Body!!!!!!!!!")
+    console.log(req.body)
     if (user == null){
         return res.status(400).send('Cannot Find User')
     }
     else{
         if ( req.body.password == user.password){
-            res.send('Success')
+            res.send({records:[], error:"" })
+            
         }else{
-            res.status(500).send('Wrong Password');
+            // res.status(500).send('Wrong Password');
+            res.send({records:[], error:"WRONG PASSWORD!!!!" })
         }
     }
 })
