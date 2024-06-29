@@ -4,7 +4,7 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { getMenuItems }from './methods.js';
-import { getUsers }from './methods.js';
+import { getUsers ,insertOrderHeader}from './methods.js';
 
 
 
@@ -93,6 +93,15 @@ app.post('/api/login', async (req, res) => {
         }
 })
     
+
+app.post('/api/createOrder', async (req, res) => {
+    console.log("body received" +JSON.stringify(req.body))
+    let orderData = await insertOrderHeader(req.body);
+    console.log(orderData[0].insertId)
+    // console.log(JSON.stringify(orderData[0].insertId))
+
+    res.send("ok")
+})
 
     // if (username === 'admin' && password === '123456789') {
         
