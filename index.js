@@ -9,10 +9,7 @@ import { getUsers }from './methods.js';
 
 
 
-<<<<<<< Updated upstream
-const app = express()
 
-=======
 const app = express();
 
 const allowedOrigins = ['http://localhost:8080']; // Add your frontend origin here
@@ -34,7 +31,6 @@ app.use(cors(corsOptions))
 app.use(express.json()); 
 // app.use(cors());
 app.use(cookieParser('mySecretkey'));
->>>>>>> Stashed changes
 app.use(session ({
     secret: 'your-session-secret-key',
     resave: false,
@@ -42,15 +38,8 @@ app.use(session ({
     cookie: { secure: false }
 }))
 
-<<<<<<< Updated upstream
-app.use(cors());
-=======
->>>>>>> Stashed changes
 
 
-<<<<<<< Updated upstream
-app.use(express.json()); //Allows application to accept JSON
-=======
 
 
 // app.use(function (req, res, next) {
@@ -63,7 +52,6 @@ app.use(express.json()); //Allows application to accept JSON
 //     );
 //     next();
 // }); 
->>>>>>> Stashed changes
 
 
 
@@ -91,20 +79,6 @@ app.get('/api/login', (req, res) => {
 
 app.post('/api/login', async (req, res) => {
     let users = await getUsers();
-<<<<<<< Updated upstream
-    let user = users[0].find(x => x.username === req.body.username)
-    if (user == null){
-        return res.status(400).send('Cannot Find User')
-    }
-    else{
-        if ( req.body.password == user.password){
-            res.send('Success')
-        }else{
-            res.status(500).send('Wrong Password');
-        }
-    }
-})
-=======
     let x = users[0].find(x => x.username === req.body.username)
     if (x == null){return res.status(400).send('Cannot Find User')
     }else{
@@ -154,7 +128,6 @@ const port = 5000;
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
   })
->>>>>>> Stashed changes
 
 
 // A simple SELECT query
