@@ -1,4 +1,6 @@
 import mysql from 'mysql2/promise';
+import expressMySQLSession from 'express-mysql-session';
+import session from 'express-session';
 
 
 
@@ -10,7 +12,8 @@ let connection = await mysql.createPool({
     database: 'asoe',
   });
 
-
+  const MySQLStore = expressMySQLSession(session);
+  const sessionStore = new MySQLStore({}, connection);
 
 
 async function getMenuItems(){
@@ -79,6 +82,8 @@ async function insertOrderData(orderData,order_id,tableld){
 
 
 export  {
+    connection,
+    sessionStore,
     getMenuItems,
     getUsers ,
     insertOrderHeader

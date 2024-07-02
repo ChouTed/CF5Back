@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { getMenuItems }from './methods.js';
 import { getUsers ,insertOrderHeader}from './methods.js';
-
+import { connection, sessionStore } from './methods.js';
 
 
 
@@ -33,9 +33,13 @@ app.use(express.json());
 app.use(cookieParser('mySecretkey'));
 app.use(session ({
     secret: 'your-session-secret-key',
+    store: sessionStore,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }
+    cookie: { 
+        maxAge: 1000 * 60 * 60 * 8, // 8 hours
+        secure: false,
+    }
 }))
 
 
@@ -84,11 +88,16 @@ app.post('/api/login', async (req, res) => {
     }else{
             if ( req.body.password == x.password) {
                 req.session.username=x;
-                res.send({records:[], error:"" })
-                
-            }else{
-                // res.status(500).send('Wrong Password');
-                res.send({records:[], error:"WRONG PASSWORD!!!!" })
+                req.session.isAuth = true; //Marks session as authenticated
+                req.session.save(err => {
+                    if (err) {
+                      console.error(err);
+                      return res.status(500).send('Internal Server Error');
+                    }
+                    res.send({ records: [], error: "" });
+                  });
+            }else {
+                  res.send({ records: [], error: "WRONG PASSWORD!!!!" });
             }
         }
 })
