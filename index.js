@@ -59,6 +59,16 @@ app.use(session ({
 
 
 
+app.post('/api/isAuth', (req, res) => {
+    if (req.session.isAuth) {
+      res.json({ isAuth: true });
+    } else {
+      res.json({ isAuth: false });
+    }
+  });
+
+  
+
 app.get('/api/getUsers', async (req,res) =>{
     let users = await getUsers();
     res.json(users[0]);
@@ -74,7 +84,6 @@ app.get('/api/getMenu', async (req, res) => {
 
 
 app.get('/api/login', (req, res) => {
-    req.session.isAuth = true;
     res.setHeader("Access-Control-Allow-Origin", "*");
     console.log(req.session);
     res.send("hello")
@@ -138,6 +147,8 @@ app.post('/api/createOrder', async (req, res) => {
     //         res.send({records:[], error:"WRONG PASSWORD!!!!" })
     //     }
     // }
+
+
 
 
 
