@@ -26,6 +26,16 @@ async function getMenuItems(){
 
 }
 
+async function getOrderDetails(table_id){
+    let res = await connection.query(
+        'SELECT * FROM `orders_specific` where table_id = ' + table_id.toString()
+    ).then(response => {return response});
+
+
+    return res; 
+
+}
+
 async function getUsers(){
     let res = await connection.query(
         'SELECT username,password FROM `user_login` '
@@ -86,12 +96,41 @@ async function insertOrderData(orderData,order_id,tableld){
 
 }
 
+async function updateOrderData(orderData,order_id,tableld){
+    // console.log(orderData)
+    let timestamp_z = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    console.log("Order ID")
+    console.log(order_id)
+    let values = order_id + ','
+    values = order_id + ','
+    values += orderData.product_id +','
+    values += orderData.product_quantity +','
+    values += parseInt(tableld) +','
+    values += '0,'
+
+    let newValue = values.slice(0,-1)
+
+    newValue += ")"
+    let query ='INSERT INTO `orders_specific` (order_id, product_id,product_quantity,table_id,order_type) VALUES ( ' + newValue
+    console.log("Query")
+    console.log(query)
+    try{
+        let res = await connection.query(query).then(response => {return response});
+        
+        return res;
+    }catch(err){
+        console.error(err)
+        // connection.release();
+    }
+
+}
 
 export  {
     connection,
     sessionStore,
     getMenuItems,
     getUsers ,
-    insertOrderHeader
+    insertOrderHeader,
+    getOrderDetails
 }
 

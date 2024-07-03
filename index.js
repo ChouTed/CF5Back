@@ -3,7 +3,7 @@ import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { getMenuItems }from './methods.js';
+import { getMenuItems, getOrderDetails }from './methods.js';
 import { getUsers ,insertOrderHeader}from './methods.js';
 import { connection, sessionStore } from './methods.js';
 
@@ -78,10 +78,16 @@ app.get('/api/getUsers', async (req,res) =>{
 
 app.get('/api/getMenu', async (req, res) => {
     let result= await getMenuItems();
+    // console.log(req)
     res.json(result[0]);
 })
 
-
+app.get('/api/getOrder/:table_no', async (req, res) => {
+    
+    console.log(req.params.table_no)
+    let result= await getOrderDetails(req.params.table_no);
+    res.json(result[0]);
+})
 
 app.get('/api/login', (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -121,35 +127,15 @@ app.post('/api/createOrder', async (req, res) => {
     res.send("ok")
 })
 
-    // if (username === 'admin' && password === '123456789') {
-        
-    //     req.session.user=username;
-    //     res.cookie('userCookie', 'cookieValue', {   httpOnly:true, secure: false});
 
-    //     res.json({ message: 'Login successful'});
-    // }else {
-    //     res.status(401).json({ message: 'Invalid credentials'});
-    // }
+app.post('/api/updateOrder/:table_no', async (req, res) => {
+    console.log("body received" +JSON.stringify(req.body))
+    let orderData = await insertOrderHeader(req.body);
+    console.log(orderData[0].insertId)
+    // console.log(JSON.stringify(orderData[0].insertId))
 
-
-    // let user = users[0].find(x => x.username === req.body.username)
-    // console.log("Body!!!!!!!!!")
-    // console.log(req.body)
-    // if (user == null){
-    //     return res.status(400).send('Cannot Find User')
-    // }
-    // else{
-    //     if ( req.body.password == user.password){
-    //         res.send({records:[], error:"" })
-            
-    //     }else{
-    //         // res.status(500).send('Wrong Password');
-    //         res.send({records:[], error:"WRONG PASSWORD!!!!" })
-    //     }
-    // }
-
-
-
+    res.send("ok")
+})
 
 
 const port = 5000;
@@ -158,30 +144,3 @@ app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
   })
 
-
-// A simple SELECT query
-// try {
-//     console.log('trexei to back')
-//   const [results, fields] = await connection.query(
-//     'SELECT * FROM `tables`'
-//   );
-
-
-// } catch (err) {
-//   console.log(err);
-// }
-
-
-
-
-// // Using placeholders
-// try {
-//   const [results] = await connection.query(
-//     'SELECT * FROM `table` WHERE `name` = ? AND `age` > ?',
-//     ['Page', 45]
-//   );
-
-//   console.log(results);
-// } catch (err) {
-//   console.log(err);
-// }
