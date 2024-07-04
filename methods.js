@@ -28,9 +28,11 @@ async function getMenuItems(){
 
 async function getOrderDetails(table_id){
     let res = await connection.query(
-        'SELECT * FROM `orders_specific` where table_id = ' + table_id.toString()
+        'SELECT * FROM orders_specific os '+
+        'join orders o on o.order_id = os.order_id and o.table_id = os.table_id where '+
+         ' os.table_id = ' + parseInt(table_id) +' and o.active = 1'
     ).then(response => {return response});
-
+    console.log(res)
 
     return res; 
 
@@ -49,7 +51,7 @@ async function insertOrderHeader(data){
     console.log("Table ID")
     console.log(data.table_id)
     let timestamp_z = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    let query ='INSERT INTO `orders` (table_id, time_in, time_out) VALUES ( '+ parseInt(data.table_id) +',"' + timestamp_z + '","' +timestamp_z +'")'
+    let query ='INSERT INTO `orders` (table_id, time_in, time_out,active) VALUES ( '+ parseInt(data.table_id) +',"' + timestamp_z + '","' +timestamp_z +'",'+1 +')'
     console.log("QUERY")
     console.log(query)
     let res = await connection.query(query).then(response => {return response});
@@ -96,7 +98,7 @@ async function insertOrderData(orderData,order_id,tableld){
 
 }
 
-async function updateOrderData(orderData,order_id,tableld){
+async function updateOrderData(orderData,tableld,order_id){
     // console.log(orderData)
     let timestamp_z = new Date().toISOString().slice(0, 19).replace('T', ' ');
     console.log("Order ID")
@@ -111,11 +113,39 @@ async function updateOrderData(orderData,order_id,tableld){
     let newValue = values.slice(0,-1)
 
     newValue += ")"
-    let query ='INSERT INTO `orders_specific` (order_id, product_id,product_quantity,table_id,order_type) VALUES ( ' + newValue
+    let queryDb ='INSERT INTO `orders_specific` (order_id, product_id,product_quantity,table_id,order_type) VALUES ( ' + newValue
     console.log("Query")
-    console.log(query)
+    // console.log(query)
     try{
-        let res = await connection.query(query).then(response => {return response});
+        let resHOrderHeader = await connection.query(
+            'SELECT * FROM `orders_specific` where table_id = ' + tableld.toString() + ' and order_id = '+ order_id 
+        ).then(response => {return response});
+        for(let i in orderData){
+            let found = false;
+
+            for(let j in resHOrderHeader[0]){
+                console.log("OLD LINE: "+resHOrderHeader[0][j].product_id)
+                console.log("NEW LINE: "+orderData[i].product_id)
+                if(resHOrderHeader[0][j].product_id == orderData[i].product_id){
+                    found = true;
+                }
+            }
+            let  FINDUP = resHOrderHeader[0].find((x)=> x.product_id == orderData[i].product_id)
+            console.log("FINDUP")
+            console.log(resHOrderHeader[0][0])
+            console.log("FINDUP")
+            if (found){
+
+                queryDb = 'update orders_specific set product_quantity = ' + orderData[i].product_quantity + ' where product_id = ' +  orderData[i].product_id
+            }else{
+                // delete
+                console.log(orderData[i])
+                queryDb = 'delete from  orders_specific where product_id = ' +  orderData[i].product_id +' and order_id = ' +order_id +' and table_id = ' + tableld
+            }
+        }
+        // console.log(queryDb)
+        // console.log(resHOrderHeader)
+        let res = await connection.query(queryDb).then(response => {return response});
         
         return res;
     }catch(err){
@@ -131,6 +161,7 @@ export  {
     getMenuItems,
     getUsers ,
     insertOrderHeader,
-    getOrderDetails
+    getOrderDetails,
+    updateOrderData
 }
 

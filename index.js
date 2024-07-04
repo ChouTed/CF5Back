@@ -3,7 +3,7 @@ import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { getMenuItems, getOrderDetails }from './methods.js';
+import { getMenuItems, getOrderDetails, updateOrderData }from './methods.js';
 import { getUsers ,insertOrderHeader}from './methods.js';
 import { connection, sessionStore } from './methods.js';
 
@@ -123,15 +123,15 @@ app.post('/api/createOrder', async (req, res) => {
     let orderData = await insertOrderHeader(req.body);
     console.log(orderData[0].insertId)
     // console.log(JSON.stringify(orderData[0].insertId))
-
-    res.send("ok")
+    let records = {order_id :orderData[0].insertId }
+    res.json(records)
 })
 
 
-app.post('/api/updateOrder/:table_no', async (req, res) => {
+app.post('/api/updateOrder/:table_no/:order_no', async (req, res) => {
     console.log("body received" +JSON.stringify(req.body))
-    let orderData = await insertOrderHeader(req.body);
-    console.log(orderData[0].insertId)
+    let orderData = await updateOrderData(req.body,req.params.table_no,req.params.order_no);
+    // console.log(orderData[0].insertId)
     // console.log(JSON.stringify(orderData[0].insertId))
 
     res.send("ok")
