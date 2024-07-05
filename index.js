@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { getMenuItems, getOrderDetails, updateOrderData }from './methods.js';
 import { getUsers ,insertOrderHeader}from './methods.js';
+import { deleteOrder } from './methods.js';
 import { connection, sessionStore } from './methods.js';
 
 
@@ -136,6 +137,13 @@ app.post('/api/updateOrder/:table_no/:order_no', async (req, res) => {
 
     res.send("ok")
 })
+
+app.delete('/api/deleteOrder/:order_id', async (req,res) => {
+    let deleteResponse = await deleteOrder(req.params.order_id)
+    console.log(deleteResponse)
+    res.json(deleteResponse)
+})
+
 
 
 const port = 5000;
