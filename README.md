@@ -46,7 +46,6 @@ npm install
 #### 3. Set up MySQL:
 
 Create a MySQL database named asoe.
-Update the MySQL credentials in methods.js if necessary.
 
 ## Running the Server
 
