@@ -1,7 +1,7 @@
 # Backend
 ## Overview
 
-This project is a backend API for managing orders and user authentication for a restaurant system. It uses Node.js with Express, MySQL for the database, and Swagger for API documentation.
+This repository containts the backend API for a restaurant management system. It uses Node.js with Express, MySQL for the database, and Swagger for API documentation. The system allows users to manage table orders, track customer numbers at each table, and place, edit or delete orders.
 
 ## Features
 
